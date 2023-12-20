@@ -27,10 +27,12 @@ const endpoints = getNetworkEndpoints(network);
 // https://testnet.sentry.chain.grpc-web.injective.network/cosmos.bank.v1beta1.Query/DenomsMetadata
 
 const testnetIndexerEndpoint = 'https://testnet.sentry.exchange.grpc-web.injective.network';
+const testnetRPC = "https://testnet.sentry.tm.injective.network";
+const testnetGRPC =  "https://testnet.sentry.chain.grpc.injective.network" // endpoints.grpc;
 
 const bankModule = new ChainGrpcBankApi(endpoints.grpc);
 const tokenFactory = TokenFactory.make(network);
-const denomClient = new DenomClient(network);
+//const denomClient = new DenomClient(network);
 const exchangeModule = new ChainGrpcExchangeApi(network);
 const spotAPI = new IndexerGrpcSpotApi(testnetIndexerEndpoint); // NOTE: indexer is broken on testnet?
 
@@ -44,7 +46,7 @@ const oracleFetcher = new IndexerGrpcOracleApi(testnetIndexerEndpoint);
 const modules = {
 	bank: bankModule,
 	tokens: tokenFactory,
-	denoms: denomClient,
+	//denoms: denomClient,
 	exchange: exchangeModule,
 	spotAPI,
 	accountPortfolioStreamer: accountPortfolioStreamer,
@@ -54,7 +56,7 @@ const modules = {
 };
 
 export const load = (async () => {
-	const cosmwasmClient = await CosmWasmClient.connect(endpoints.rpc!);
+	const cosmwasmClient = await CosmWasmClient.connect(testnetRPC);
 
 	// FIXME: this should be in root +page.ts
 	const debtMarkets = await Promise.all(
@@ -64,16 +66,13 @@ export const load = (async () => {
 			const { markets } = await client.getRegisteredMarkets();
 
 			const { buys, sells } = await modules.spotAPI.fetchOrderbookV2(markets[0].market_id);
-			//console.dir(markets[0]);
 
 			const highestBuy = parseFloat(
-				buys.sort((a, b) => parseFloat(b.price) - parseFloat(a.price))[0].price
+				buys.sort((a, b) => parseFloat(b.price) - parseFloat(a.price))[0]?.price ?? "0"
 			);
 			const lowestSale = parseFloat(
 				sells.sort((a, b) => parseFloat(a.price) - parseFloat(b.price))[0].price
 			);
-			console.dir(highestBuy);
-			//console.dir(lowestSale);
 
 
 

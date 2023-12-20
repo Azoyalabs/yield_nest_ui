@@ -50,8 +50,7 @@
 
 	async function mintDebt() {
 		const parsedCollateralAmount = parsedValue;
-		// Its better to use toFixed() instead of toString(), The difference is that toString can convert large numbers to scientific notation
-		const collateralAmount = Math.floor(parsedValue * Math.pow(10, 18)).toFixed(0);
+		const collateralAmount = Math.floor(parsedValue * Math.pow(10, 18)).toString();
 
 		/*
 		1- query midprice inj/usdt
@@ -78,11 +77,9 @@
 			targetDenom: debtContext.debtDenom
 		});
 		const mintExecuteMessage = MsgExecuteContract.fromJSON({
-			// contractAddress: 'inj19q4flnf78evuhvzcfqhq8x9e800rjraj2whanu',
 			contractAddress: debtContext.contractAddress,
 			sender: $USER_ADDRESS!,
 			msg: mintMessage,
-			//funds: [{ denom: 'inj', amount: collateral }]
 			funds: [{ denom: debtContext.collateralDenom, amount: collateralAmount }]
 		});
 
@@ -91,14 +88,7 @@
 			address: $USER_ADDRESS!
 		});
 
-		console.log(broadcastMsg.txHash);
-		/*
-		const mintEvent = broadcastMsg.events
-			?.find((e) => e.type === 'injective.tokenfactory.v1beta1.EventMintTFDenom')!
-			.attributes.find((a: Attribute) => a.key === 'amount')!;
-
-		console.dir(mintEvent);*/
-
+		
 		return broadcastMsg;
 	}
 
@@ -110,6 +100,7 @@
 		return JSON.parse(mintEvent.value);
 	}
 
+	let minted = "0";
 	async function marketSellDebt() {
 		// FIXME: some stuff missing here
 		// 1 - We need the amount here
@@ -123,7 +114,7 @@
 			// This is actually the worst price you are willing to sell to
 			price: '0.01',
 			// Not a 10^-6
-			quantity: '10',
+			quantity: minted,
 			subaccountId: getSubaccountId($USER_ADDRESS!)
 		});
 
@@ -141,6 +132,7 @@
 	const displayMaxCollateralRatio = parseFloat(maxCollateralRatio as unknown as string) * 100;
 
 	const INJ_BALANCE = derived(USER_BALANCES, ($balances) => {
+		console.dir($balances)
 		return (
 			$balances.find((b) => b.denom === 'inj') ?? {
 				denom: 'inj',
@@ -148,7 +140,10 @@
 			}
 		);
 	});
-	const HUMAN_INJ_BALANCE = parseInt($INJ_BALANCE.amount) * Math.pow(10, -18);
+	//$: HUMAN_INJ_BALANCE = parseInt($INJ_BALANCE.amount) * Math.pow(10, -18);
+	const HUMAN_INJ_BALANCE = derived(INJ_BALANCE, ($v) => {
+		return parseInt($v.amount) * Math.pow(10,-18)
+	})
 </script>
 
 <Dialog.Root
@@ -186,13 +181,13 @@
 								bind:value
 								step={Math.pow(10, -6).toString()}
 								min={1}
-								max={HUMAN_INJ_BALANCE}
+								max={$HUMAN_INJ_BALANCE}
 								placeholder="0.01"
 								class="pl-10"
 							/>
 						</div>
 						<div class="mt-1 text-sm text-right text-muted-foreground">
-							max: {formatCurrency(HUMAN_INJ_BALANCE)}
+							max: {formatCurrency($HUMAN_INJ_BALANCE)}
 						</div>
 					</div>
 
@@ -274,22 +269,17 @@
 						</div>
 					{/await}
 				{:else}
-					<Button on:click={() => (debtMintingPromise = mintDebt())}>Mint Debt</Button>
+					<Button on:click={() => {debtMintingPromise = mintDebt()
+					
+					debtMintingPromise.then((d) => {
+						minted = getAmountFromMintEvents(d.events).amount
+					})
+					}}>Mint Debt</Button>
 				{/if}
 			</Stepper.Content>
 
+			
 			<Stepper.Content index={2}>
-				<div class="flex-grow pb-8 space-y-6">
-					<div>
-						<h2 class="text-lg">Sell on market</h2>
-						<p class="text-sm text-muted-foreground">Exchange your debt tokens</p>
-					</div>
-					<div>get market orders (buy side) and compute an amount + rate from it?</div>
-				</div>
-
-				<Stepper.Trigger />
-			</Stepper.Content>
-			<Stepper.Content index={3}>
 				<div class="flex-grow pb-8 space-y-6">
 					<div>
 						<h2 class="text-lg">Sell your debt on the market</h2>

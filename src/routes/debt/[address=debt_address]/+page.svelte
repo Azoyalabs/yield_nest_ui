@@ -125,10 +125,27 @@
 			<Card.Header>
 				<Card.Title>Market Status</Card.Title>
 				<Card.Description class="text-xs">
-					Some info about actual rate, depth and stuff
+					Current rates and liquidity condition at a glance
 				</Card.Description>
 			</Card.Header>
 			<Card.Content>
+				<div class="grid grid-cols-2 gap-6 py-2 text-left" >
+					<div>
+
+						<h3 class="text-xs text-muted-foreground">Market Sell At</h3>
+						<div class="text-xl">
+							{data.market.orderbook.buys[0].price}
+						</div>
+					</div>
+					<div>
+
+						<h3 class="text-xs text-muted-foreground">Market Buy At</h3>
+						<div class="text-xl">
+							{data.market.orderbook.sells[0].price}
+						</div>
+					</div>
+				</div>
+				<!-- 
 				<div class="grid grid-cols-2 gap-6">
 					<div>
 						<h4 class="text-sm font-medium text-center uppercase text-foreground">Buy Orders</h4>
@@ -170,12 +187,12 @@
 							{/each}
 						</ul>
 					</div>
-				</div>
+				</div> -->
 			</Card.Content>
 			<Card.Footer class="grid grid-cols-2">
 				<div class="space-y-1">
 					<div class="text-xs font-semibold uppercase text-muted-foreground">
-						Implied Market Minting Rate
+						Implied Instant Minting Rate
 					</div>
 					<div>
 						{formatPercent(1 - parseFloat(data.market.orderbook.buys[0].price))}
@@ -289,10 +306,7 @@
 								{/each}
 							</ul>
 						{:else}
-						<span class="text-muted-foreground">
-							No open debt position found
-
-						</span>
+							<span class="text-muted-foreground"> No open debt position found </span>
 						{/if}
 					</div>
 				{:else}{/if}

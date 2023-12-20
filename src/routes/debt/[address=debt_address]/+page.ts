@@ -11,7 +11,6 @@ export const load = (async ({ parent }) => {
 	);
 
 	const market = await cascade.modules.spotAPI.fetchMarket(cascade.lendProtocol.market.market_id);
-	console.dir(market);
 
 	const trades = await cascade.modules.spotAPI.fetchTrades({
 		marketId: cascade.lendProtocol.market.market_id

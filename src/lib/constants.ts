@@ -4,7 +4,7 @@ export const DEPLOYED_DENOMS: string[] = [];
 
 export const DEPLOYED_LEND_CONTRACTS: string[] = ['inj19q4flnf78evuhvzcfqhq8x9e800rjraj2whanu'];
 
-export const GITHUB_REPOSITORY= "";
+export const GITHUB_REPOSITORY= "https://github.com/Azoyalabs/yield_nest_ui";
 export const APP_NAME = "Yield Nest"
 export const FEE_RECIPIENT = "inj19q4flnf78evuhvzcfqhq8x9e800rjraj2whanu";
 

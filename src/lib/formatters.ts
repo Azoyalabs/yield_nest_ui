@@ -3,9 +3,8 @@ const NUMBER_FORMATTER = new Intl.NumberFormat(undefined, {
 	maximumFractionDigits: 3
 });
 
-const FULL_NUMBER_FORMATTER= new Intl.NumberFormat(undefined, {
-	minimumFractionDigits: 6,
-	
+const FULL_NUMBER_FORMATTER = new Intl.NumberFormat(undefined, {
+	minimumFractionDigits: 6
 });
 
 export const formatCurrency = (value: number) => NUMBER_FORMATTER.format(value);

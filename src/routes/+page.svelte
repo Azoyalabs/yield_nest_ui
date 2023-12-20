@@ -12,7 +12,7 @@
 	<div class="py-24 text-center">
 		<h1 class="text-4xl font-semibold uppercase font-grotesque">Zero coupon bonds-based lending</h1>
 		<p class="mt-2">
-			Mint interest-free bonds, and trade them for debt. Powered by the <i>Injective Testnet</i>
+			Mint zero-coupon bonds, and trade them for debt. Powered by the <i>Injective Testnet</i>
 		</p>
 	</div>
 </section>
@@ -31,7 +31,7 @@
 				<Card.Description>Provide Collateral</Card.Description>
 			</Card.Header>
 
-			<Card.Content>Provide collateral and mint no-interest bonds</Card.Content>
+			<Card.Content>Provide collateral and mint no-coupon bonds</Card.Content>
 		</Card.Root>
 		<Card.Root class="duration-300 bg-transparent shadow-inner">
 			<Card.Header>
@@ -156,7 +156,7 @@
 					<Card.Footer class="grid grid-cols-2">
 						<div class="space-y-0.5">
 						<div class="text-xs font-semibold uppercase text-muted-foreground">
-							Implied Market Minting Rate
+							Implied Instant Minting Rate
 						</div>
 						<div>
 							{formatPercent(marketRate)}
